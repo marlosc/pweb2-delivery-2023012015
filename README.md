@@ -52,3 +52,75 @@ src/
 
 Faça **um commit por avanço** (Conventional Commits, ex.: `feat(entregas): valida origem ≠ destino`).
 Bom trabalho! 🚀
+
+
+-----------------------------------------------------------------------------
+
+## Atividade 05 — Entregas
+
+Nesta etapa foi implementada a API de entregas utilizando arquitetura em camadas.
+
+### Executando o projeto
+
+```bash
+npm install
+npm start
+```
+
+A API será executada em:
+
+```text
+http://localhost:3000
+```
+
+Para executar o autograder, com o servidor em execução:
+
+```bash
+npm run check
+```
+
+### Exemplos de requisições
+
+Criar uma entrega:
+
+```bash
+curl -X POST http://localhost:3000/api/entregas \
+  -H "Content-Type: application/json" \
+  -d '{"descricao":"Notebook","origem":"Maceió","destino":"Recife"}'
+```
+
+Listar entregas:
+
+```bash
+curl http://localhost:3000/api/entregas
+```
+
+Buscar uma entrega pelo ID:
+
+```bash
+curl http://localhost:3000/api/entregas/1
+```
+
+Avançar o status:
+
+```bash
+curl -X PATCH http://localhost:3000/api/entregas/1/avancar
+```
+
+Cancelar uma entrega:
+
+```bash
+curl -X PATCH http://localhost:3000/api/entregas/1/cancelar
+```
+
+Consultar o histórico:
+
+```bash
+curl http://localhost:3000/api/entregas/1/historico
+```
+
+Filtrar por status:
+
+```bash
+curl "http://localhost:3000/api/entregas?status=CRIADA"
+```
