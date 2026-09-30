@@ -29,4 +29,17 @@ export class MotoristasController {
       return next(erro);
     }
   }
+
+  listarEntregas(req, res, next) {
+    try {
+      const entregas = this.service.listarEntregas(
+        Number(req.params.id),
+        req.query.status
+      );
+
+      return res.status(200).json(entregas);
+    } catch (erro) {
+      return next(erro);
+    }
+  }
 }
