@@ -56,4 +56,19 @@ export class EntregasController {
       return next(erro);
     }
   }
+
+  atribuir(req, res, next) {
+    try {
+      const motoristaId = Number(req.body.motoristaId);
+
+      const entrega = this.service.atribuir(
+        Number(req.params.id),
+        motoristaId
+      );
+
+      return res.status(200).json(entrega);
+    } catch (erro) {
+      return next(erro);
+    }
+  }
 }
