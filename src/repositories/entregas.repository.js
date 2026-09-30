@@ -1,10 +1,13 @@
 /**
- * Contrato esperado para o repository de entregas:
+ * Contrato do repository de entregas.
  *
- * listarTodos(filtros?) -> Entrega[]
- * buscarPorId(id) -> Entrega | null
- * criar(dados) -> Entrega
- * atualizar(id, dados) -> Entrega | null
+ * Métodos esperados:
+ * - listarTodos(filtros?) -> Entrega[]
+ * - buscarPorId(id) -> Entrega | null
+ * - criar(dados) -> Entrega
+ * - atualizar(id, dados) -> Entrega | null
+ *
+ * O Service deve utilizar apenas estes métodos.
  */
 export class EntregasRepository {
   constructor(database) {
