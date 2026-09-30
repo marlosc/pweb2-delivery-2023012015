@@ -124,3 +124,77 @@ Filtrar por status:
 ```bash
 curl "http://localhost:3000/api/entregas?status=CRIADA"
 ```
+
+
+## Atividade 06 — Motoristas, Repository e DI
+
+Nesta etapa foram adicionados os motoristas, a atribuição de motorista às entregas e a composição das dependências com os repositories.
+
+### Novas rotas
+
+Cadastrar motorista:
+
+```http
+POST /api/motoristas
+```
+
+Listar motoristas:
+
+```http
+GET /api/motoristas
+```
+
+Buscar motorista por ID:
+
+```http
+GET /api/motoristas/:id
+```
+
+Listar entregas de um motorista:
+
+```http
+GET /api/motoristas/:id/entregas
+```
+
+Filtrar entregas do motorista por status:
+
+```http
+GET /api/motoristas/:id/entregas?status=CRIADA
+```
+
+Atribuir motorista a uma entrega:
+
+```http
+PATCH /api/entregas/:id/atribuir
+```
+
+Corpo da requisição:
+
+```json
+{
+  "motoristaId": 1
+}
+```
+
+### Composição das dependências
+
+```text
+Database
+├── EntregasRepository
+└── MotoristasRepository
+        │
+        ├── EntregasService
+        │   ├── EntregasRepository
+        │   └── MotoristasRepository
+        │
+        └── MotoristasService
+            ├── MotoristasRepository
+            └── EntregasRepository
+                │
+                ├── EntregasController
+                └── MotoristasController
+```
+
+A composição das dependências é feita em `src/routes/index.js`.
+
+Os Services recebem os repositories pelo construtor e não criam repositories diretamente.
