@@ -5,8 +5,9 @@ function criarErro(status, mensagem) {
 }
 
 export class MotoristasService {
-  constructor(repository) {
-    this.repository = repository;
+  constructor(motoristasRepository, entregasRepository) {
+    this.repository = motoristasRepository;
+    this.entregasRepository = entregasRepository;
   }
 
   criar(dados = {}) {
@@ -42,5 +43,19 @@ export class MotoristasService {
     }
 
     return motorista;
+  }
+
+  listarEntregas(id, status) {
+    this.buscarPorId(id);
+
+    const filtros = {
+      motoristaId: id
+    };
+
+    if (status) {
+      filtros.status = status;
+    }
+
+    return this.entregasRepository.listarTodos(filtros);
   }
 }
