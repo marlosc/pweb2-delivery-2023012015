@@ -20,8 +20,10 @@ export class EntregasService {
       throw criarErro(400, 'origem e destino devem ser diferentes');
     }
 
-    const duplicada = this.repository.listar().some((entrega) => {
-      const ativa = entrega.status !== 'ENTREGUE' && entrega.status !== 'CANCELADA';
+    const duplicada = this.repository.listarTodos().some((entrega) => {
+      const ativa =
+        entrega.status !== 'ENTREGUE' &&
+        entrega.status !== 'CANCELADA';
 
       return (
         ativa &&
@@ -32,7 +34,10 @@ export class EntregasService {
     });
 
     if (duplicada) {
-      throw criarErro(409, 'já existe uma entrega ativa com os mesmos dados');
+      throw criarErro(
+        409,
+        'já existe uma entrega ativa com os mesmos dados'
+      );
     }
 
     return this.repository.criar({
@@ -51,13 +56,11 @@ export class EntregasService {
   }
 
   listar(status) {
-    const entregas = this.repository.listar();
-
-    if (!status) {
-      return entregas;
+    if (status) {
+      return this.repository.listarTodos({ status });
     }
 
-    return entregas.filter((entrega) => entrega.status === status);
+    return this.repository.listarTodos();
   }
 
   buscarPorId(id) {
@@ -79,11 +82,13 @@ export class EntregasService {
     } else if (entrega.status === 'EM_TRANSITO') {
       novoStatus = 'ENTREGUE';
     } else {
-      throw criarErro(422, 'não é possível avançar o status desta entrega');
+      throw criarErro(
+        422,
+        'não é possível avançar o status desta entrega'
+      );
     }
 
-    const atualizada = {
-      ...entrega,
+    return this.repository.atualizar(id, {
       status: novoStatus,
       historico: [
         ...entrega.historico,
@@ -92,20 +97,20 @@ export class EntregasService {
           descricao: `Status alterado para ${novoStatus}`
         }
       ]
-    };
-
-    return this.repository.atualizar(atualizada);
+    });
   }
 
   cancelar(id) {
     const entrega = this.buscarPorId(id);
 
-    if (entrega.status === 'ENTREGUE' || entrega.status === 'CANCELADA') {
+    if (
+      entrega.status === 'ENTREGUE' ||
+      entrega.status === 'CANCELADA'
+    ) {
       throw criarErro(422, 'não é possível cancelar esta entrega');
     }
 
-    const atualizada = {
-      ...entrega,
+    return this.repository.atualizar(id, {
       status: 'CANCELADA',
       historico: [
         ...entrega.historico,
@@ -114,9 +119,7 @@ export class EntregasService {
           descricao: 'Entrega cancelada'
         }
       ]
-    };
-
-    return this.repository.atualizar(atualizada);
+    });
   }
 
   historico(id) {
