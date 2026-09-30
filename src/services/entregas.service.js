@@ -5,8 +5,9 @@ function criarErro(status, mensagem) {
 }
 
 export class EntregasService {
-  constructor(repository) {
-    this.repository = repository;
+  constructor(entregasRepository, motoristasRepository) {
+    this.repository = entregasRepository;
+    this.motoristasRepository = motoristasRepository;
   }
 
   criar(dados = {}) {
@@ -124,5 +125,40 @@ export class EntregasService {
 
   historico(id) {
     return this.buscarPorId(id).historico;
+  }
+
+  atribuir(id, motoristaId) {
+    const entrega = this.buscarPorId(id);
+
+    if (entrega.status !== 'CRIADA') {
+      throw criarErro(
+        422,
+        'motorista só pode ser atribuído a uma entrega CRIADA'
+      );
+    }
+
+    const motorista = this.motoristasRepository.buscarPorId(motoristaId);
+
+    if (!motorista) {
+      throw criarErro(404, 'motorista não encontrado');
+    }
+
+    if (motorista.status !== 'ATIVO') {
+      throw criarErro(
+        422,
+        'motorista precisa estar ATIVO'
+      );
+    }
+
+    return this.repository.atualizar(id, {
+      motoristaId: motorista.id,
+      historico: [
+        ...entrega.historico,
+        {
+          data: new Date().toISOString(),
+          descricao: `Motorista ${motorista.id} atribuído à entrega`
+        }
+      ]
+    });
   }
 }
