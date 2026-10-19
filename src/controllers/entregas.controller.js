@@ -3,65 +3,77 @@ export class EntregasController {
     this.service = service;
   }
 
-  criar(req, res, next) {
+  async criar(req, res, next) {
     try {
-      const entrega = this.service.criar(req.body);
+      const entrega = await this.service.criar(req.body);
       return res.status(201).json(entrega);
     } catch (erro) {
       return next(erro);
     }
   }
 
-  listar(req, res, next) {
+  async listar(req, res, next) {
     try {
-      const entregas = this.service.listar(req.query.status);
+      const entregas = await this.service.listar(req.query.status);
       return res.status(200).json(entregas);
     } catch (erro) {
       return next(erro);
     }
   }
 
-  buscarPorId(req, res, next) {
+  async buscarPorId(req, res, next) {
     try {
-      const entrega = this.service.buscarPorId(Number(req.params.id));
+      const entrega = await this.service.buscarPorId(
+        Number(req.params.id)
+      );
+
       return res.status(200).json(entrega);
     } catch (erro) {
       return next(erro);
     }
   }
 
-  avancar(req, res, next) {
+  async avancar(req, res, next) {
     try {
-      const entrega = this.service.avancar(Number(req.params.id));
+      const entrega = await this.service.avancar(
+        Number(req.params.id)
+      );
+
       return res.status(200).json(entrega);
     } catch (erro) {
       return next(erro);
     }
   }
 
-  cancelar(req, res, next) {
+  async cancelar(req, res, next) {
     try {
-      const entrega = this.service.cancelar(Number(req.params.id));
+      const entrega = await this.service.cancelar(
+        Number(req.params.id)
+      );
+
       return res.status(200).json(entrega);
     } catch (erro) {
       return next(erro);
     }
   }
 
-  historico(req, res, next) {
+  async historico(req, res, next) {
     try {
-      const historico = this.service.historico(Number(req.params.id));
+      const historico = await this.service.historico(
+        Number(req.params.id)
+      );
+
       return res.status(200).json(historico);
     } catch (erro) {
       return next(erro);
     }
   }
 
-  atribuir(req, res, next) {
+  async atribuir(req, res, next) {
     try {
       const motoristaId = Number(req.body.motoristaId);
 
-      const entrega = this.service.atribuir(
+      const entrega = await this.service.atribuir(
         Number(req.params.id),
         motoristaId
       );
