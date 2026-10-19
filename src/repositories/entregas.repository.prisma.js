@@ -57,7 +57,10 @@ export class EntregasRepositoryPrisma {
     if (historico) {
       data.historico = {
         deleteMany: {},
-        create: historico
+        create: historico.map((evento) => ({
+          data: evento.data,
+          descricao: evento.descricao
+        }))
       };
     }
 
