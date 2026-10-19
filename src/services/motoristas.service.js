@@ -10,20 +10,20 @@ export class MotoristasService {
     this.entregasRepository = entregasRepository;
   }
 
-  criar(dados = {}) {
+  async criar(dados = {}) {
     const { nome, cpf, placaVeiculo } = dados;
 
     if (!nome || !cpf) {
       throw criarErro(400, 'nome e cpf são obrigatórios');
     }
 
-    const existente = this.repository.buscarPorCpf(cpf);
+    const existente = await this.repository.buscarPorCpf(cpf);
 
     if (existente) {
       throw criarErro(409, 'já existe motorista com este CPF');
     }
 
-    return this.repository.criar({
+    return await this.repository.criar({
       nome,
       cpf,
       placaVeiculo: placaVeiculo || null,
@@ -31,12 +31,12 @@ export class MotoristasService {
     });
   }
 
-  listar() {
-    return this.repository.listarTodos();
+  async listar() {
+    return await this.repository.listarTodos();
   }
 
-  buscarPorId(id) {
-    const motorista = this.repository.buscarPorId(id);
+  async buscarPorId(id) {
+    const motorista = await this.repository.buscarPorId(id);
 
     if (!motorista) {
       throw criarErro(404, 'motorista não encontrado');
@@ -45,8 +45,8 @@ export class MotoristasService {
     return motorista;
   }
 
-  listarEntregas(id, status) {
-    this.buscarPorId(id);
+  async listarEntregas(id, status) {
+    await this.buscarPorId(id);
 
     const filtros = {
       motoristaId: id
@@ -56,6 +56,6 @@ export class MotoristasService {
       filtros.status = status;
     }
 
-    return this.entregasRepository.listarTodos(filtros);
+    return await this.entregasRepository.listarTodos(filtros);
   }
 }
