@@ -1,200 +1,75 @@
-# Delivery Tracker — Exercício do Capítulo 4
+## Atividade 07 — Persistência com Prisma e SQLite
 
-> **Programação Web II — IFAL/Maceió.** Este é o **projeto do semestre** (avaliado). No Cap. 4 você
-> inicia a **Delivery Tracker API** com **arquitetura em camadas** e, depois, **Repository Pattern +
-> injeção de dependência**. A correção é **automática** (autograder de conformidade) + arquitetura.
+Nesta etapa, a persistência em memória foi substituída por Prisma ORM com SQLite, mantendo o mesmo comportamento da API.
 
-## Como usar este repositório
+### Configuração
 
-1. Clique em **"Use this template"** e crie **`pweb2-delivery-<matricula>`** (ex.: `pweb2-delivery-20231012345`).
-   Este é o repositório que você usará o **semestre inteiro** (evolui a cada capítulo).
-2. Clone, instale e rode:
-   ```bash
-   npm install
-   npm start                                        # http://localhost:3000
-   # em outro terminal — autograder:
-   npm run check                                    # = BASE_URL=http://localhost:3000 node autograder/check.mjs
-   ```
-3. A cada `git push`, o **GitHub Actions** roda o autograder e mostra a nota na aba **Actions**
-   (resumo do job). O `autograder/check.mjs` é **aberto** — leia para saber exatamente o que se espera.
+Crie o arquivo `.env` a partir do exemplo:
 
-## O que implementar (em `src/`)
-
-```
-src/
-├── controllers/   # traduz HTTP ↔ service (sem regra de negócio)
-├── services/      # TODA a regra de negócio
-├── repositories/  # só acesso a dados
-├── database/      # persistência SIMULADA em memória (sem banco real, sem ORM)
-├── routes/        # composição das dependências (injeção) + monta em /api
-└── utils/
+```bash
+cp .env.example .env
 ```
 
-- **Regra de negócio só no Service.** Injeção de dependência no **composition root** (`src/routes`).
-- O `server.js` só configura o app (já traz o `GET /api/health` exigido — não remova).
+O arquivo deve conter:
 
-## Duas etapas (ver os enunciados completos)
+```env
+DATABASE_URL="file:./dev.db"
+```
 
-- **Atividade 05 — Entregas em camadas:** CRUD de `/api/entregas`, ciclo de status
-  (`CRIADA → EM_TRANSITO → ENTREGUE`/`CANCELADA`), histórico. Meta: checagens de **Entregas** verdes.
-- **Atividade 06 — Motoristas + Contratos + DI:** `/api/motoristas`, atribuição de motorista,
-  contratos de repository (JSDoc) e composição num ponto único. Meta: **122/122**.
-
-> O critério de **inversão de dependência** é verificado pelo professor **trocando o repository por
-> um Mock** que respeita o contrato — programe contra o contrato desde o início.
-
-## Contrato (resumo)
-
-- Base `/api` · JSON · erro `{ "erro": "..." }` · `GET /api/health` → `{ "status": "ok" }`.
-- Status: `201` criar · `400` entrada inválida · `404` não encontrado · `409` unicidade
-  (duplicata/CPF) · `422` regra de estado (transição/atribuição inválida).
-- Execução: `npm start`, respeita `process.env.PORT`, branch `main`.
-
-Faça **um commit por avanço** (Conventional Commits, ex.: `feat(entregas): valida origem ≠ destino`).
-Bom trabalho! 🚀
-
-
------------------------------------------------------------------------------
-
-## Atividade 05 — Entregas
-
-Nesta etapa foi implementada a API de entregas utilizando arquitetura em camadas.
-
-### Executando o projeto
+### Instalação e banco de dados
 
 ```bash
 npm install
+npx prisma generate
+npx prisma migrate deploy
+```
+
+Para ambiente de desenvolvimento e criação de novas migrations:
+
+```bash
+npx prisma migrate dev
+```
+
+### Executando
+
+```bash
 npm start
 ```
 
-A API será executada em:
+A API ficará disponível em:
 
 ```text
 http://localhost:3000
 ```
 
-Para executar o autograder, com o servidor em execução:
+Para executar o autograder:
 
 ```bash
 npm run check
 ```
 
-### Exemplos de requisições
-
-Criar uma entrega:
+Para visualizar os dados do banco:
 
 ```bash
-curl -X POST http://localhost:3000/api/entregas \
-  -H "Content-Type: application/json" \
-  -d '{"descricao":"Notebook","origem":"Maceió","destino":"Recife"}'
+npx prisma studio
 ```
 
-Listar entregas:
+### Persistência
 
-```bash
-curl http://localhost:3000/api/entregas
-```
+As entidades `Entrega`, `Motorista` e `Evento` são armazenadas em SQLite através do Prisma.
 
-Buscar uma entrega pelo ID:
-
-```bash
-curl http://localhost:3000/api/entregas/1
-```
-
-Avançar o status:
-
-```bash
-curl -X PATCH http://localhost:3000/api/entregas/1/avancar
-```
-
-Cancelar uma entrega:
-
-```bash
-curl -X PATCH http://localhost:3000/api/entregas/1/cancelar
-```
-
-Consultar o histórico:
-
-```bash
-curl http://localhost:3000/api/entregas/1/historico
-```
-
-Filtrar por status:
-
-```bash
-curl "http://localhost:3000/api/entregas?status=CRIADA"
-```
-
-
-## Atividade 06 — Motoristas, Repository e DI
-
-Nesta etapa foram adicionados os motoristas, a atribuição de motorista às entregas e a composição das dependências com os repositories.
-
-### Novas rotas
-
-Cadastrar motorista:
-
-```http
-POST /api/motoristas
-```
-
-Listar motoristas:
-
-```http
-GET /api/motoristas
-```
-
-Buscar motorista por ID:
-
-```http
-GET /api/motoristas/:id
-```
-
-Listar entregas de um motorista:
-
-```http
-GET /api/motoristas/:id/entregas
-```
-
-Filtrar entregas do motorista por status:
-
-```http
-GET /api/motoristas/:id/entregas?status=CRIADA
-```
-
-Atribuir motorista a uma entrega:
-
-```http
-PATCH /api/entregas/:id/atribuir
-```
-
-Corpo da requisição:
-
-```json
-{
-  "motoristaId": 1
-}
-```
-
-### Composição das dependências
+A camada de Service continua responsável pelas regras de negócio, enquanto os repositories Prisma são responsáveis pelo acesso ao banco.
 
 ```text
-Database
-├── EntregasRepository
-└── MotoristasRepository
-        │
-        ├── EntregasService
-        │   ├── EntregasRepository
-        │   └── MotoristasRepository
-        │
-        └── MotoristasService
-            ├── MotoristasRepository
-            └── EntregasRepository
-                │
-                ├── EntregasController
-                └── MotoristasController
+Controller
+    ↓
+Service
+    ↓
+Repository Prisma
+    ↓
+Prisma Client
+    ↓
+SQLite
 ```
 
-A composição das dependências é feita em `src/routes/index.js`.
-
-Os Services recebem os repositories pelo construtor e não criam repositories diretamente.
+Os dados permanecem armazenados mesmo após o servidor ser reiniciado.
