@@ -1,0 +1,105 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= titulo || 'Delivery Tracker' %></title>
+
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f4f6f9;
+      color: #263238;
+    }
+
+    header {
+      background: #17365d;
+      color: white;
+      padding: 20px 32px;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 24px;
+    }
+
+    main {
+      max-width: 1100px;
+      margin: 30px auto;
+      padding: 0 20px;
+    }
+
+    .card {
+      background: white;
+      padding: 24px;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px #00000012;
+      margin-bottom: 20px;
+    }
+
+    .btn {
+      display: inline-block;
+      background: #1769aa;
+      color: white;
+      padding: 10px 16px;
+      border: none;
+      border-radius: 6px;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    .btn-danger { background: #c62828; }
+
+    input, select {
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      width: 100%;
+      margin: 6px 0 14px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th, td {
+      padding: 12px;
+      border-bottom: 1px solid #ddd;
+      text-align: left;
+    }
+
+    .alert {
+      padding: 12px;
+      border-radius: 6px;
+      margin-bottom: 16px;
+    }
+
+    .alert-success {
+      background: #d9f5df;
+      color: #155724;
+    }
+
+    .alert-error {
+      background: #fce0e0;
+      color: #842029;
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <h1>Delivery Tracker</h1>
+  </header>
+
+  <main>
+    <%- include('../partials/navbar') %>
+    <%- include('../partials/flash') %>
+    <%- body %>
+  </main>
+</body>
+</html>
