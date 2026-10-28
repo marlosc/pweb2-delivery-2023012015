@@ -1,0 +1,82 @@
+
+<section class="card">
+  <h2>Novo motorista</h2>
+
+  <p style="color: #666;">
+    Preencha os dados para cadastrar um motorista.
+  </p>
+
+  <% if (typeof erros !== 'undefined' && erros.length > 0) { %>
+    <div class="alert alert-error" role="alert">
+      <strong>Verifique os seguintes problemas:</strong>
+
+      <ul>
+        <% erros.forEach(function(erro) { %>
+          <li><%= erro.msg || erro.mensagem || erro %></li>
+        <% }); %>
+      </ul>
+    </div>
+  <% } %>
+
+  <form action="/motoristas" method="POST">
+
+    <label for="nome">
+      <strong>Nome completo</strong>
+    </label>
+
+    <input
+      type="text"
+      id="nome"
+      name="nome"
+      placeholder="Ex.: João da Silva"
+      value="<%= valores?.nome || '' %>"
+      required
+    >
+
+    <label for="cpf">
+      <strong>CPF</strong>
+    </label>
+
+    <input
+      type="text"
+      id="cpf"
+      name="cpf"
+      placeholder="Ex.: 12345678901"
+      maxlength="14"
+      value="<%= valores?.cpf || '' %>"
+      required
+    >
+
+    <label for="placaVeiculo">
+      <strong>Placa do veículo (opcional)</strong>
+    </label>
+
+    <input
+      type="text"
+      id="placaVeiculo"
+      name="placaVeiculo"
+      placeholder="Ex.: ABC1D23"
+      maxlength="7"
+      value="<%= valores?.placaVeiculo || '' %>"
+    >
+
+    <div style="
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 12px;
+    ">
+      <button type="submit" class="btn">
+        Cadastrar motorista
+      </button>
+
+      <a
+        href="/motoristas"
+        class="btn"
+        style="background: #6c757d;"
+      >
+        Cancelar
+      </a>
+    </div>
+  </form>
+</section>
