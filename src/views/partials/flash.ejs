@@ -1,0 +1,18 @@
+
+<% if (mensagens && mensagens.sucesso) { %>
+  <% mensagens.sucesso.forEach(function(mensagem) { %>
+    <div class="alert alert-success" role="alert">
+      <strong>Sucesso!</strong>
+      <%= mensagem %>
+    </div>
+  <% }); %>
+<% } %>
+
+<% if (mensagens && mensagens.erro) { %>
+  <% mensagens.erro.forEach(function(mensagem) { %>
+    <div class="alert alert-error" role="alert">
+      <strong>Erro!</strong>
+      <%= mensagem %>
+    </div>
+  <% }); %>
+<% } %>
