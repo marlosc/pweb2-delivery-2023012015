@@ -1,0 +1,155 @@
+
+<section class="card">
+  <h2>Detalhes da entrega #<%= entrega.id %></h2>
+
+  <p>
+    <strong>Descrição:</strong>
+    <%= entrega.descricao %>
+  </p>
+
+  <p>
+    <strong>Origem:</strong>
+    <%= entrega.origem %>
+  </p>
+
+  <p>
+    <strong>Destino:</strong>
+    <%= entrega.destino %>
+  </p>
+
+  <p>
+    <strong>Status:</strong>
+    <%= entrega.status.replaceAll('_', ' ') %>
+  </p>
+
+  <p>
+    <strong>Motorista:</strong>
+    <% if (entrega.motorista) { %>
+      <%= entrega.motorista.nome %>
+    <% } else if (entrega.motoristaId) { %>
+      Motorista #<%= entrega.motoristaId %>
+    <% } else { %>
+      Não atribuído
+    <% } %>
+  </p>
+
+  <hr>
+
+  <h3>Ações da entrega</h3>
+
+  <% if (entrega.status === 'CRIADA') { %>
+    <h4>Atribuir motorista</h4>
+
+    <form
+      action="/entregas/<%= entrega.id %>/atribuir?_method=PATCH"
+      method="POST"
+    >
+      <label for="motoristaId">
+        Selecione um motorista
+      </label>
+
+      <select
+        id="motoristaId"
+        name="motoristaId"
+        required
+      >
+        <option value="">Selecione...</option>
+
+        <% motoristas.forEach(function(motorista) { %>
+          <% if (motorista.status === 'ATIVO') { %>
+            <option
+              value="<%= motorista.id %>"
+              <%= entrega.motoristaId === motorista.id
+                ? 'selected' : '' %>
+            >
+              <%= motorista.nome %>
+            </option>
+          <% } %>
+        <% }); %>
+      </select>
+
+      <button type="submit" class="btn">
+        Atribuir motorista
+      </button>
+    </form>
+  <% } %>
+
+  <% if (
+    entrega.status === 'CRIADA' ||
+    entrega.status === 'EM_TRANSITO'
+  ) { %>
+    <div style="
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 20px;
+    ">
+      <form
+        action="/entregas/<%= entrega.id %>/avancar?_method=PATCH"
+        method="POST"
+      >
+        <button type="submit" class="btn">
+          Avançar status
+        </button>
+      </form>
+
+      <form
+        action="/entregas/<%= entrega.id %>/cancelar?_method=PATCH"
+        method="POST"
+      >
+        <button type="submit" class="btn btn-danger">
+          Cancelar entrega
+        </button>
+      </form>
+    </div>
+  <% } %>
+
+  <% if (
+    entrega.status === 'ENTREGUE' ||
+    entrega.status === 'CANCELADA'
+  ) { %>
+    <p style="color: #666;">
+      Esta entrega foi finalizada e não permite
+      novas alterações de status.
+    </p>
+  <% } %>
+</section>
+
+<section class="card">
+  <h3>Histórico da entrega</h3>
+
+  <% if (!entrega.historico ||
+         entrega.historico.length === 0) { %>
+    <p>Nenhuma movimentação registrada.</p>
+  <% } else { %>
+    <table>
+      <thead>
+        <tr>
+          <th>Data</th>
+          <th>Descrição</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <% entrega.historico.forEach(function(item) { %>
+          <tr>
+            <td>
+              <%= item.data
+                ? new Date(item.data).toLocaleString('pt-BR')
+                : '-' %>
+            </td>
+
+            <td>
+              <%= item.descricao %>
+            </td>
+          </tr>
+        <% }); %>
+      </tbody>
+    </table>
+  <% } %>
+</section>
+
+<a href="/entregas" class="btn"
+   style="background: #6c757d;">
+  Voltar para entregas
+</a>
