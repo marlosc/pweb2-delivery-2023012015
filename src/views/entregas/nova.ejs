@@ -1,0 +1,77 @@
+
+<section class="card">
+  <h2>Nova entrega</h2>
+
+  <p style="color: #666;">
+    Preencha os dados abaixo para cadastrar uma entrega.
+  </p>
+
+  <% if (typeof erros !== 'undefined' && erros.length > 0) { %>
+    <div class="alert alert-error" role="alert">
+      <strong>Verifique os seguintes problemas:</strong>
+      <ul>
+        <% erros.forEach(function(erro) { %>
+          <li><%= erro.msg || erro.mensagem || erro %></li>
+        <% }); %>
+      </ul>
+    </div>
+  <% } %>
+
+  <form action="/entregas" method="POST">
+
+    <label for="descricao">
+      <strong>Descrição</strong>
+    </label>
+
+    <input
+      type="text"
+      id="descricao"
+      name="descricao"
+      placeholder="Ex.: Entrega de documentos"
+      value="<%= valores?.descricao || '' %>"
+      required
+    >
+
+    <label for="origem">
+      <strong>Origem</strong>
+    </label>
+
+    <input
+      type="text"
+      id="origem"
+      name="origem"
+      placeholder="Ex.: Maceió"
+      value="<%= valores?.origem || '' %>"
+      required
+    >
+
+    <label for="destino">
+      <strong>Destino</strong>
+    </label>
+
+    <input
+      type="text"
+      id="destino"
+      name="destino"
+      placeholder="Ex.: Arapiraca"
+      value="<%= valores?.destino || '' %>"
+      required
+    >
+
+    <div style="
+      display: flex;
+      gap: 12px;
+      margin-top: 12px;
+      flex-wrap: wrap;
+    ">
+      <button type="submit" class="btn">
+        Cadastrar entrega
+      </button>
+
+      <a href="/entregas" class="btn"
+         style="background: #6c757d;">
+        Cancelar
+      </a>
+    </div>
+  </form>
+</section>
