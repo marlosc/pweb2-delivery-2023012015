@@ -1,0 +1,111 @@
+
+<section class="card">
+  <div style="
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+  ">
+    <div>
+      <h2 style="margin: 0 0 8px;">
+        Entregas cadastradas
+      </h2>
+      <p style="margin: 0; color: #666;">
+        Acompanhe o andamento das entregas.
+      </p>
+    </div>
+
+    <a href="/entregas/nova" class="btn">
+      + Nova entrega
+    </a>
+  </div>
+
+  <form action="/entregas" method="GET"
+        style="margin-bottom: 24px;">
+    <label for="status">
+      <strong>Filtrar por status</strong>
+    </label>
+
+    <select id="status" name="status">
+      <option value="">Todos os status</option>
+
+      <option value="CRIADA"
+        <%= statusSelecionado === 'CRIADA'
+          ? 'selected' : '' %>>
+        Criada
+      </option>
+
+      <option value="EM_TRANSITO"
+        <%= statusSelecionado === 'EM_TRANSITO'
+          ? 'selected' : '' %>>
+        Em trânsito
+      </option>
+
+      <option value="ENTREGUE"
+        <%= statusSelecionado === 'ENTREGUE'
+          ? 'selected' : '' %>>
+        Entregue
+      </option>
+
+      <option value="CANCELADA"
+        <%= statusSelecionado === 'CANCELADA'
+          ? 'selected' : '' %>>
+        Cancelada
+      </option>
+    </select>
+
+    <button type="submit" class="btn">
+      Filtrar
+    </button>
+  </form>
+
+  <% if (!entregas || entregas.length === 0) { %>
+    <p style="
+      text-align: center;
+      padding: 24px;
+      color: #666;
+    ">
+      Nenhuma entrega encontrada.
+    </p>
+  <% } else { %>
+    <div style="overflow-x: auto;">
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Descrição</th>
+            <th>Origem</th>
+            <th>Destino</th>
+            <th>Status</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <% entregas.forEach(function(entrega) { %>
+            <tr>
+              <td><%= entrega.id %></td>
+              <td><%= entrega.descricao %></td>
+              <td><%= entrega.origem %></td>
+              <td><%= entrega.destino %></td>
+              <td>
+                <strong>
+                  <%= entrega.status
+                    .replaceAll('_', ' ') %>
+                </strong>
+              </td>
+              <td>
+                <a href="/entregas/<%= entrega.id %>"
+                   class="btn">
+                  Detalhes
+                </a>
+              </td>
+            </tr>
+          <% }); %>
+        </tbody>
+      </table>
+    </div>
+  <% } %>
+</section>
