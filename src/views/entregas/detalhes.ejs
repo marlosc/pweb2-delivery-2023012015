@@ -24,10 +24,19 @@
 
   <p>
     <strong>Motorista:</strong>
-    <% if (entrega.motorista) { %>
-      <%= entrega.motorista.nome %>
-    <% } else if (entrega.motoristaId) { %>
-      Motorista #<%= entrega.motoristaId %>
+
+    <% if (entrega.motoristaId) { %>
+      <% const motoristaAtribuido = motoristas.find(
+        function(motorista) {
+          return motorista.id === entrega.motoristaId;
+        }
+      ); %>
+
+      <% if (motoristaAtribuido) { %>
+        <%= motoristaAtribuido.nome %>
+      <% } else { %>
+        Motorista #<%= entrega.motoristaId %>
+      <% } %>
     <% } else { %>
       Não atribuído
     <% } %>
@@ -149,7 +158,10 @@
   <% } %>
 </section>
 
-<a href="/entregas" class="btn"
-   style="background: #6c757d;">
+<a
+  href="/entregas"
+  class="btn"
+  style="background: #6c757d;"
+>
   Voltar para entregas
 </a>
